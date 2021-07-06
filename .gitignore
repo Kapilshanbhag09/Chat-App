@@ -1,0 +1,13 @@
+backend/node_modules
+react_app/node_modules
+react_native_app/node_modules
+react_native_app/node_modules/
+react_native_app/.expo/
+react_native_app/npm-debug.*
+react_native_app/*.jks
+react_native_app/*.p8
+react_native_app/*.p12
+react_native_app/*.key
+react_native_app/*.mobileprovision
+react_native_app/*.orig.*
+react_native_app/web-build/

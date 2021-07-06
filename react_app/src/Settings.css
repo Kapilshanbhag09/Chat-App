@@ -1,0 +1,12 @@
+.sidebar{
+    width: 70px;
+    background-color: #110E17;
+    height: 100vh;
+    position: absolute;
+    border-right: 1px solid #251C31;
+  }
+.chatbar{
+    margin-left: 70px;
+    background-color: #110E17;
+    height: 100vh;
+}
