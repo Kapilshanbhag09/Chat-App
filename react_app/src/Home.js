@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './Home.css'
 import { Link, withRouter } from "react-router-dom";
 import io from "socket.io-client";
+import axios from 'axios';
 import Chat_Logo from './assets/chat.png'
 import Settings_Logo from './assets/settings.png';
 import Call_Logo from './assets/call.png';
@@ -11,12 +12,13 @@ import Send_logo from "./assets/send.png"
 import Mess_Sent_Sound from "./assets/sounds/mess_sent.mp3"
 const socket = io("http://localhost:4000");
 function Home() {
-    const [value,setvalue]=useState('')
+    const [myside,setmyside]=useState('Kapil')
     const [message,setmessage]=useState('')
     const [messagearr,setmessagearray]=useState([])
+    const [newmessagearr,setnewmessagearr]=useState([])
     let mess_sent_audio = new Audio(Mess_Sent_Sound);
     const handlechange=(e)=>{
-        setvalue(e.target.value)
+        setmyside(e.target.value)
     }
     const messageformsubmit=(e)=>{
         e.preventDefault();
@@ -24,7 +26,7 @@ function Home() {
             console.log("Empty message")
             alert("Empty message");
         }else{
-        socket.emit('message_sent',({message,value}));
+        socket.emit('message_sent',({message,myside}));
         setmessage('')
         mess_sent_audio.play()
         }
@@ -32,12 +34,38 @@ function Home() {
     const messageformtextchange=(e)=>{
         setmessage(e.target.value)
     }
+
+    useEffect(()=>{
+        axios.get(`http://localhost:4000/getmessage/`+myside)
+        .then(res => {
+          const messres = res.data;
+          const tempmesres=[];
+          for(let i=0;i<messres.length;i++){
+              tempmesres[i]=[];
+              tempmesres[i][0]=messres[i].sender;
+              tempmesres[i][1]=messres[i].message;
+          }
+        setmessagearray([]);
+          setmessagearray(tempmesres);
+        });
+        setnewmessagearr([]);
+    },[myside])
+    //This is for socket message recieved
     useEffect(()=>{
         socket.on("message_recieved",(data)=>{
-            const tempmesarr=messagearr;
-            tempmesarr.push(data);
-            setmessagearray([]);
-            setmessagearray(tempmesarr)
+           
+            const tempmesarrnewdata=[];
+            tempmesarrnewdata[0]=data.myside;
+            tempmesarrnewdata[1]=data.message;
+            console.log(newmessagearr)
+            const tempmesarr=newmessagearr;
+            console.log("Tempmesarr");
+            console.log(tempmesarr);
+            tempmesarr.push(tempmesarrnewdata);
+            console.log("After new message");
+            console.log(tempmesarr)
+            setnewmessagearr([]);
+            setnewmessagearr(tempmesarr)
         })
     },[])
     return (
@@ -82,9 +110,9 @@ function Home() {
             <p style={{color: 'white',fontSize:"20px",fontWeight:"bold",marginRight:"30px"}}>+</p>
         </div>
         <div>
-        <input type="text" name="name" value={value} onChange={handlechange} className="chatbar_pl_input" placeholder="Your name" autocomplete="off" />
+        <input type="text" name="name" myside={myside} onChange={handlechange} className="chatbar_pl_input" placeholder="Your name" autocomplete="off" />
         </div>
-<h1 style={{color: "white"}}>{value}</h1>
+<h1 style={{color: "white"}}>{myside}</h1>
     </div>
     {//Chat box Conversation
     }
@@ -93,27 +121,53 @@ function Home() {
             {
                 messagearr.map((indmess)=>{
                     return(
-                        indmess.value==value?
+                        indmess[0]==myside?
                             <div style={{display:'flex',alignItems:'end',justifyContent:'space-between'}}>
                             <div style={{backgroundColor:"110E17"}}></div>
                             <div style={{backgroundColor:"#4D38A2",marginTop:'10px',marginRight:'10px',borderRadius:"10px",padding:"10px",textOverflow : 'ellipsis',maxWidth:'70%'}}>
                             
                             <p style={{color:'white', fontSize:"10px",fontWeight:'bold'}}>You</p>
-                            <p style={{color:'white', fontSize:"15px"}}>{indmess.message}</p>
+                            <p style={{color:'white', fontSize:"15px"}}>{indmess[1]}</p>
                             </div>
                             </div>
                             
                         :
                         <div style={{width:'100%',display:'flex'}}>
                         <div style={{backgroundColor:"#19182A",marginTop:'10px',marginLeft:'10px',borderRadius:"10px",padding:"10px",maxWidth:'70%',textOverflow : 'ellipsis'}}>
-                            <p style={{color:'white', fontSize:"10px",fontWeight:"bold"}}>{indmess.value}</p>
-                            <p style={{color:'white', fontSize:"15px"}}>{indmess.message}</p>
+                            <p style={{color:'white', fontSize:"10px",fontWeight:"bold"}}>{indmess[0]}</p>
+                            <p style={{color:'white', fontSize:"15px"}}>{indmess[1]}</p>
                         </div>
                         <div style={{backgroundColor:"110E17"}}></div>
                         </div>
                     
                     )
                 })
+            }
+            {
+
+    newmessagearr.map((indmess)=>{
+        return(
+            indmess[0]==myside?
+                <div style={{display:'flex',alignItems:'end',justifyContent:'space-between'}}>
+                <div style={{backgroundColor:"110E17"}}></div>
+                <div style={{backgroundColor:"#4D38A2",marginTop:'10px',marginRight:'10px',borderRadius:"10px",padding:"10px",textOverflow : 'ellipsis',maxWidth:'70%'}}>
+                
+                <p style={{color:'white', fontSize:"10px",fontWeight:'bold'}}>You</p>
+                <p style={{color:'white', fontSize:"15px"}}>{indmess[1]}</p>
+                </div>
+                </div>
+                
+            :
+            <div style={{width:'100%',display:'flex'}}>
+            <div style={{backgroundColor:"#19182A",marginTop:'10px',marginLeft:'10px',borderRadius:"10px",padding:"10px",maxWidth:'70%',textOverflow : 'ellipsis'}}>
+                <p style={{color:'white', fontSize:"10px",fontWeight:"bold"}}>{indmess[0]}</p>
+                <p style={{color:'white', fontSize:"15px"}}>{indmess[1]}</p>
+            </div>
+            <div style={{backgroundColor:"110E17"}}></div>
+            </div>
+        
+        )
+    })
             }
         </div>
         <div className="chatbox_text_div">
