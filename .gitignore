@@ -1,5 +1,6 @@
 backend/node_modules
 react_app/node_modules
+react_app/.env
 react_native_app/node_modules
 react_native_app/node_modules/
 react_native_app/.expo/

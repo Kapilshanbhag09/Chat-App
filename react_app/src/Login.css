@@ -1,0 +1,38 @@
+.login{
+    background-color: #110E17;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.login_box{
+    background-attachment: #110E17;
+    border-radius: 10px;
+    border: 1px solid #251C31;
+}
+.login_box_text{
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.google_login-button{
+    background-color: #4D38A2;
+    display: flex;
+    margin:10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    padding: 5px 10px 5px 10px;
+}
+.google_logo{
+    width: 50px;
+}
+.google_text{
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    margin-left: 5px;
+}

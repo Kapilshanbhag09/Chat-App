@@ -48,7 +48,6 @@ function Home() {
         setmessagearray([]);
           setmessagearray(tempmesres);
         });
-        setnewmessagearr([]);
     },[myside])
     //This is for socket message recieved
     useEffect(()=>{
